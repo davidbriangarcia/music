@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            background-color: #121212; 
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #status {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: #1DB954; /* Spotify Green */
+        }
+        audio {
+            width: 80%;
+            height: 50px;
+        }
+        .visualizer {
+            width: 80%;
+            height: 100px;
+            background: linear-gradient(to bottom, #1db954, #191414);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="visualizer">AUDIO PLAYER MODE</div>
+    <div id="status">Ready</div>
+    <audio id="audioPlayer" controls></audio>
+
+    <script>
+        const player = document.getElementById('audioPlayer');
+        const statusDiv = document.getElementById('status');
+        let serverIp = 'localhost';
+
+        function setServerIp(ip) {
+            serverIp = ip;
+            console.log("Server IP set to: " + serverIp);
+        }
+
+        // Methods called from C#
+        function loadVideo(videoId) {
+            statusDiv.innerText = "Loading Audio...";
+            // We point to the Express server on port 3001
+            player.src = `http://${serverIp}:3001/audio/${videoId}.mp3`;
+            player.load();
+            statusDiv.innerText = "Playing: " + videoId;
+        }
+
+        function playVideo() {
+            player.play().catch(e => console.error("Play failed", e));
+        }
+
+        function pauseVideo() {
+            player.pause();
+        }
+
+        function seekTo(seconds) {
+            if (Math.abs(player.currentTime - seconds) > 0.5) {
+                player.currentTime = seconds;
+            }
+        }
+
+        function getCurrentTime() {
+            return player.currentTime;
+        }
+
+        // Event listeners to notify C#
+        player.onplay = () => window.chrome.webview.postMessage({ type: 'STATE_CHANGE', state: 1 });
+        player.onpause = () => window.chrome.webview.postMessage({ type: 'STATE_CHANGE', state: 2 });
+        player.onended = () => window.chrome.webview.postMessage({ type: 'STATE_CHANGE', state: 0 });
+        
+        // Notify C# that we are ready
+        window.onload = () => {
+            window.chrome.webview.postMessage({ type: 'READY' });
+        };
+    </script>
+</body>
+</html>

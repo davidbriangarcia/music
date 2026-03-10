@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "vmZrmIVFGyY=",
+  "success": true,
+  "projectFilePath": "C:\\Dave\\music\\MusicSyncApp\\MusicSyncApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\davda\\.nuget\\packages\\microsoft.web.webview2\\1.0.3800.47\\microsoft.web.webview2.1.0.3800.47.nupkg.sha512",
+    "C:\\Users\\davda\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}
